@@ -3,7 +3,7 @@ This repo contains terraform code to deploy production EC2 instance for the RDS 
 
 The EC2 instances are part of autoscaling group. The autoscaling group is part of the load balancer target group. Minimim instance count is 2 and maximum is 4. Refer to the main.tf file for more details on the criteria for scaling up and down.
 
-## Prerequisites
+## Requirements
 
 - Terraform
 - AWS CLI
@@ -13,6 +13,17 @@ The EC2 instances are part of autoscaling group. The autoscaling group is part o
 - Key Pair Name for the EC2 instance
 - Subnet ID for the EC2 instance
 - VPC ID for the EC2 instance
+
+## Prerequisites for running the EC2 code.
+
+1. RDS code has to be successful.
+2. AMI Used in the code is ami-0339ce5ee4f5eb7fa.
+3. Paste the AMI ID to the variables.tf file - code block variable “ami”.
+4. Subnets should be available and created as part of the RDS code.
+5. A load balancer is created and available as a part of the RDS code.
+6. An SSH key pair should be available. Create an SSH key pair from the AWS console. The name of the key pair should be prd-ec2-key-pair.
+7. prd-nres-alb should be available. It is created as a part of the RDS code.
+8. A wildcard certificate request with domain name *.naturalretreats.com was generated via Amazon Certificate Manager (ACM). After the request is generated, add the CNAME record displayed on the screen to the Cloudflare public DNS zone for naturalretreats.com. After this step, validate the certificate status as ISSUED in the ACM.
 
 ## Usage
 
@@ -45,3 +56,10 @@ The EC2 instances are part of autoscaling group. The autoscaling group is part o
 - aws_access_key: AWS access key
 - aws_secret_key: AWS secret key
 
+## EC2 Autoscaling
+Below are the settings and conditions for EC2 autoscaling.
+
+1. Scales up when CPU > 80% for 10 minutes  
+2. Scales down when CPU < 40% for 10 minutes  
+3. Has a 5-minute cooldown period between scaling actions.  
+4. Adds/removes one instance at a time.
