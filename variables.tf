@@ -25,7 +25,7 @@ variable "key_pair" {
 variable "ami" {
   description = "AMI ID"
   type        = string
-  default     = "ami-053b0d53c279acc90" # get the ami after creating the clone of the existing instance
+  default     = "ami-0339ce5ee4f5eb7fa" # get the ami after creating the clone of the existing instance
 }
 
 variable "environment" {
