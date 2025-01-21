@@ -139,7 +139,8 @@ resource "aws_lb_target_group" "prd-nres-ec2-7443-tg" {
 }
 
 data "aws_lb" "prd-nres-alb" {
-  name = "prd-nres-alb"
+  # name = "prd-nres-alb"
+  arn = "arn:aws:elasticloadbalancing:us-east-1:097579231662:loadbalancer/app/prd-nres-alb/c84614c1451c6a47"
 }
 
 data "aws_acm_certificate" "prd-nres-ec2-cert" {
@@ -155,6 +156,17 @@ resource "aws_lb_listener" "prd-nres-alb-443-listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.prd-nres-ec2-8443-tg.arn
+    
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.prd-nres-ec2-8443-tg.arn
+        weight = 1
+      }
+      stickiness {
+        enabled  = false
+        duration = 300  # 5 minutes - can be any value between 1 and 604800
+      }
+    }
   }
   ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
   certificate_arn = data.aws_acm_certificate.prd-nres-ec2-cert.arn
@@ -167,9 +179,21 @@ resource "aws_lb_listener" "prd-nres-alb-7443-listener" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.prd-nres-ec2-7443-tg.arn
+    
+    forward {
+      target_group {
+        arn    = aws_lb_target_group.prd-nres-ec2-7443-tg.arn
+        weight = 1
+      }
+      stickiness {
+        enabled  = false
+        duration = 300  # 5 minutes - can be any value between 1 and 604800
+      }
+    }
   }
   ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-Res-2021-06"
   certificate_arn = data.aws_acm_certificate.prd-nres-ec2-cert.arn
+
 }
 
 resource "aws_lb_listener" "prd-nres-alb-80-listener" {
