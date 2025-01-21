@@ -1,3 +1,5 @@
+# variables.tf all the variables are defined here
+
 variable "region" {
   description = "AWS region"
   type        = string
